@@ -6,7 +6,7 @@ const { constants } = require("../configs");
 const { Users } = require("../models");
 const { generalHelperFunctions } = require("../helpers");
 //const { EmailService } = require("../helpers/emailService");
-const { SendOtp } = require("../helpers/smsService");
+//const { SendOtp } = require("../helpers/smsService");
 const { request } = require("../helpers");
 
 /**
@@ -158,12 +158,20 @@ const userRegistration = async (params) => {
      // generate phone number code
  
      const phoneNumberCode = generalHelperFunctions.generatePhoneNumberCode();
-     const message = `Otp number${phoneNumberCode}`;
+     //const message = `Otp number${phoneNumberCode}`;
 
 
      //send otp to user phone number
-    await SendOtp.sendOtpToPhone(phoneNumber, message);
-
+    //await SendOtp.sendOtpToPhone(phoneNumber, message);
+    const smsbody ={ 
+      phoneNumber: phoneNumber,
+      from:"BrilloCOnntez",
+      message: `Otp number${phoneNumberCode}`
+   }
+    await request(
+      `${process.env.EMAIL_SERVICE_BASE_URL}/send-sms`,
+      "post",smsbody
+    );
     //send emailCode to user email
   const body ={ 
      email: email,
@@ -278,21 +286,19 @@ const userRegistration = async (params) => {
       new: true,
     });
 
-    const { email: _email, _id, phoneNumber } = user;
+    // const { email: _email, _id, phoneNumber } = user;
 
-    const serializeUserDetails = { _email, _id, phoneNumber };
+    // const serializeUserDetails = { _email, _id, phoneNumber };
 
-    //authenticate the user if email code is valid
-    const accessToken = jwt.sign(serializeUserDetails, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+    // //authenticate the user if email code is valid
+    // const accessToken = jwt.sign(serializeUserDetails, process.env.JWT_SECRET, {
+    //   expiresIn: process.env.JWT_EXPIRES_IN,
+    // });
 
 
 
     return {
       status: true,
-      token:accessToken,
-      data: user,
       message: "authentication codes verified successfully:",
     };
   } catch (e) {

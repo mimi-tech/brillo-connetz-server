@@ -12,17 +12,17 @@ const nonRestrictedEndPoints = [
   "/validate-user-token",
   "/match-user",
   "/verify-auth-code",
-  "/delete-user",
+  
 ];
 
 //creates list of authorized endpoints
 const restrictedEndPoints = [
   
- 
+  "/get-user",
   "/update-user-data",
-  
+  "/delete-user",
   "/update-email",
-   "/get-user",
+  
    
   
 ]
