@@ -5,9 +5,9 @@ const jwt = require("jsonwebtoken");
 const { constants } = require("../configs");
 const { Users } = require("../models");
 const { generalHelperFunctions } = require("../helpers");
-const { EmailService } = require("../helpers/emailService");
+//const { EmailService } = require("../helpers/emailService");
 const { SendOtp } = require("../helpers/smsService");
-
+const { request } = require("../helpers");
 
 /**
  * Display welcome text
@@ -159,6 +159,31 @@ const userRegistration = async (params) => {
  
      const phoneNumberCode = generalHelperFunctions.generatePhoneNumberCode();
      const message = `Otp number${phoneNumberCode}`;
+
+
+     //send otp to user phone number
+    await SendOtp.sendOtpToPhone(phoneNumber, message);
+
+    //send emailCode to user email
+  const body ={ 
+     email: email,
+    subject:"BrilloCOnntez Account Verification",
+    message: phoneNumberCode.toString()
+  }
+
+//for sending account verification code to email
+  const {status: getuserStatus,  message: getUserMessage, } = await request(
+    `${process.env.EMAIL_SERVICE_BASE_URL}/send-email`,
+    "post",body
+  );
+  
+  if (getuserStatus === false) {
+    return {
+      status: getuserStatus,
+      message: getUserMessage,
+    };
+  }
+  
     //create account
     const newUserAccount = await Users.create({
       email: email,
@@ -173,15 +198,7 @@ const userRegistration = async (params) => {
       verificationCode:phoneNumberCode
     });
     
-   //send otp to user phone number
-    await SendOtp.sendOtpToPhone(phoneNumber, message);
-
-   //send emailCode to user email
-
- await EmailService.sendEmailVerificationCode({
-   user: email,
-   code: phoneNumberCode,
- });
+   
 
  
 
@@ -191,7 +208,10 @@ const userRegistration = async (params) => {
       profileImageUrl: newUserAccount.profileImageUrl,
       isPhoneNumberVerified: newUserAccount.isPhoneNumberVerified,
       phoneNumber: newUserAccount.phoneNumber,
-      username: newUserAccount.username
+      username: newUserAccount.username,
+      interest: newUserAccount.interest,
+      firstName: newUserAccount.firstName,
+      lastName: newUserAccount.lastName,
     }
 
     return {
