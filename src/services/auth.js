@@ -6,7 +6,7 @@ const { constants } = require("../configs");
 const { Users } = require("../models");
 const { generalHelperFunctions } = require("../helpers");
 //const { EmailService } = require("../helpers/emailService");
-//const { SendOtp } = require("../helpers/smsService");
+const { SendOtp } = require("../helpers/smsService");
 const { request } = require("../helpers");
 
 /**
@@ -158,20 +158,13 @@ const userRegistration = async (params) => {
      // generate phone number code
  
      const phoneNumberCode = generalHelperFunctions.generatePhoneNumberCode();
-     //const message = `Otp number${phoneNumberCode}`;
-
+     const message = `Otp number${phoneNumberCode}`;
+     
 
      //send otp to user phone number
-    //await SendOtp.sendOtpToPhone(phoneNumber, message);
-    const smsbody ={ 
-      phoneNumber: phoneNumber,
-      from:"BrilloCOnntez",
-      message: `Otp number${phoneNumberCode}`
-   }
-    await request(
-      `${process.env.EMAIL_SERVICE_BASE_URL}/send-sms`,
-      "post",smsbody
-    );
+    await SendOtp.sendOtpToPhone(phoneNumber, message);
+    
+    
     //send emailCode to user email
   const body ={ 
      email: email,

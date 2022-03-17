@@ -5,6 +5,7 @@ const sendOtpToPhone = async (to, text) => {
 
     try {
         if (process.env.SMS_PIPE === 'production') {
+            
             const vonage = new Vonage({
                 apiKey: process.env.NEXMO_API_KEY,
                 apiSecret: process.env.NEXMO_API_SECRET,
@@ -12,7 +13,7 @@ const sendOtpToPhone = async (to, text) => {
 
 
             const from = "BrilloConntz"
-
+           
 
             vonage.message.sendSms(from, to, text, (err, responseData) => {
                 if (err) {
@@ -21,6 +22,7 @@ const sendOtpToPhone = async (to, text) => {
                         message: err,
                     };
                 }
+                console.log(responseData)
                 if (responseData.messages[0].status === "0") {
                     console.log("Otp has been sent to your phone");
                     return {
@@ -29,7 +31,7 @@ const sendOtpToPhone = async (to, text) => {
                     };
 
                 }
-
+                
             })
         }
 
