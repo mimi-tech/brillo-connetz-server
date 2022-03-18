@@ -64,5 +64,12 @@ module.exports = {
    
   },
 
+reSendCode:{ 
+    phoneNumber: Joi.string().required(),
+    email: Joi.string().required(),
+    authId: Joi.string().required(),
+   
+  },
+
 
 }

@@ -697,6 +697,71 @@ const forgotPassword = async (params) => {
 };
 
 
+/**
+ * for fetching a user from sparksUsers collection[inservice endpoint]
+ * @param {Object} params  user id {authId} params needed.
+ * @returns {Promise<Object>} Contains status, and returns data and message
+ */
+
+ const reSendCode = async (params) => {
+  const { authId, phoneNumber,email} = params;
+  try {
+    const user = await Users.findOne({ _id: authId });
+
+    if (!user) {
+      return {
+        status: false,
+        message: "User not found",
+      };
+    }
+
+    const phoneNumberCode = generalHelperFunctions.generatePhoneNumberCode();
+    const message = `Otp number${phoneNumberCode}`;
+    
+
+    //send otp to user phone number
+   await SendOtp.sendOtpToPhone(phoneNumber, message);
+   
+   
+   //send emailCode to user email
+ const body ={ 
+    email: email,
+   subject:"BrilloCOnntez Account Verification",
+   message: phoneNumberCode.toString()
+ }
+
+//for sending account verification code to email
+ const {status: getuserStatus,  message: getUserMessage, } = await request(
+   `${process.env.EMAIL_SERVICE_BASE_URL}/send-email`,
+   "post",body
+ );
+ 
+ if (getuserStatus === false) {
+   return {
+     status: getuserStatus,
+     message: getUserMessage,
+   };
+ }
+ const filter = { _id: authId };
+    
+ const update = { verificationCode: phoneNumberCode };
+ await Users.findOneAndUpdate(filter, update, {
+   new: true,
+ });
+
+    return {
+      status: true,
+      message: "sent successfully",
+    };
+  } catch (e) {
+  
+    return {
+      status: false,
+      message: constants.SERVER_ERROR("RESENDING CODE"),
+    };
+  }
+};
+
 
 module.exports = {
   welcomeText,
@@ -710,6 +775,7 @@ module.exports = {
   
   forgotPassword,
   updateEmailAddress,
-  matchUsers
+  matchUsers,
+  reSendCode
   
 };

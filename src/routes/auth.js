@@ -27,6 +27,8 @@ routes.get("/match-user",validate(validator.matchUsers),auth.matchUsers);
 
 routes.post("/verify-auth-code",validate(validator.validateAuthCodes),auth.validateAuthCodes);
 
+routes.post("/resend-code",validate(validator.reSendCode),auth.reSendCode);
+
 
 
 module.exports = routes; 

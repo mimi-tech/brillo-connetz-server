@@ -186,7 +186,7 @@ paths:
     put:
       tags:
         - AUTH  # Value of the tag
-      summary: UPDATE CHURCH EMAIL ADDRESS BY ID.
+      summary: UPDATE EMAIL ADDRESS BY ID.
       produces:
         - application/json
       parameters:
@@ -197,13 +197,38 @@ paths:
           default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzIwODQxODB9.60qxpvDKlXV3x4-XDf2GRWgEkuSvL_XuCYPbn5jil-
         - in: body # request body
           name:   update-email-address # name of request, can be any name
-          description: It enables church members to change church
+          description: It enables user to change email
           required: true # can also be true depending on user preference
           schema: # Schema definition
             $ref: "#/definitions/emailAddress" 
       responses: # server responses
         200:
-          description: should return member church updated successfully
+          description: should return email updated successfully
+
+
+
+  /resend-code:
+    post:
+      tags:
+        - USERS  # Value of the tag
+      summary: RESEND CODE BY ID.
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: authorization
+          description: access token
+          required: true
+          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzIwODQxODB9.60qxpvDKlXV3x4-XDf2GRWgEkuSvL_XuCYPbn5jil-
+        - in: body # request body
+          name:  resend-code # name of request, can be any name
+          description: It enables auth codes to be sent
+          required: true # can also be true depending on user preference
+          schema: # Schema definition
+            $ref: "#/definitions/resendCodes" 
+      responses: # server responses
+        200:
+          description: should return code sent successfully
 
 
   /match-user:
@@ -322,6 +347,22 @@ definitions: # Schema definition for request body
       username:
           type: string
           default: mimiluv
+
+  resendCodes:
+    type: object
+    properties:
+      authId:
+          type: string
+          default: 6c02428b-2fc4-4cc2-b923-c045401f84b
+        
+
+      phoneNumber:
+          type: string
+          default: +2348737484434
+
+      email:
+          type: string
+          default: chi@gmail.com    
 
      
 

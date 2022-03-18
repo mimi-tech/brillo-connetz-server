@@ -63,6 +63,11 @@ const welcomeText = async (req, res) => {
     return response(res, data);
   };
   
+ const reSendCode = async (req, res) => {
+    const data = await auth.reSendCode(req.form);
+    return response(res, data);
+  };
+  
  
 
 
@@ -80,5 +85,6 @@ const welcomeText = async (req, res) => {
     forgotPassword,
     updateEmailAddress,
     matchUsers,
-    validateAuthCodes
+    validateAuthCodes,
+    reSendCode
   }

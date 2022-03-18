@@ -12,6 +12,7 @@ const nonRestrictedEndPoints = [
   "/validate-user-token",
   "/match-user",
   "/verify-auth-code",
+  "/resend-code"
   
 ];
 
